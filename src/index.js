@@ -14,11 +14,15 @@ import fetchCountries from './js/fetchCounties';
 
 
 
-const fetchValue = fetchCountries
+const fetchValue = fetchCountries;
 
 const inputTextValue = document.querySelector('#search-box');
-const countryList = document.querySelector('.country-list')
-const countryInfo = document.querySelector('.country-info')
+const countryList = document.querySelector('.country-list');
+const countryInfo = document.querySelector('.country-info');
+
+
+const cleanCardOfCountry = country => country.innerHTML = '';
+
 
 const DEBOUNCE_DELAY = 300;
 
@@ -34,12 +38,57 @@ const DEBOUNCE_DELAY = 300;
 // }
 
 
+
+
 const onInputValue = (e) => {
 
     const textValue = e.target.value.trim();
+    if (!textValue) {
+        cleanCardOfCountry(countryList);
+        cleanCardOfCountry(countryInfo)
+}
+    fetchValue(textValue).then(r => {
+        if(r.length > 10) {
+            Notify.info('Too many matches found. Please enter a more specific name');
+        return;
+        }
+        renderMarkupCardOfCountry(r)
+    }).catch(err => {
+        cleanCardOfCountry(countryInfo);
+        cleanCardOfCountry(countryList)
+      Notify.failure(`Oops, there is no country with that name`)
+    });
 
-    console.log(fetchValue(textValue))  
 }
 
+
+const renderMarkupCardOfCountry = (e) => {
+    if (e.length === 1) {
+    cleanCardOfCountry(countryList);
+    countryInfo.innerHTML = renderInfoCountry(e);
+    } 
+    else {
+    cleanCardOfCountry(countryInfo);
+    countryList.innerHTML = renderListCountry(e);
+  }
+    }
+    
+
+const renderListCountry = (e) => {
+    return e.map(({ name, flags }) =>
+        `<li><img src="${flags.png}" alt="${name.official}" width="60" height="40">${name.official}</li>`
+    ).join('')
+    
+}
+
+const renderInfoCountry = (e) => {
+    return e.map(({ name, population, flags, languages }) => {
+        `<h1><img src="${flags.png}" alt="${name.official}" width="40" height="40">${name.official}</h1>
+      <p>Capital: ${capital}</p>
+      <p>Population: ${population}</p>
+      <p>Languages: ${Object.values(languages)}</p>`
+    })
+    
+}
 
 inputTextValue.addEventListener('input', onInputValue)
