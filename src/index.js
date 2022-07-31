@@ -1,6 +1,7 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import './css/styles.css';
 import fetchCountries from './js/fetchCounties';
+import debounce from 'lodash.debounce'
 //Создать функцию по поиску стран fetchCountries [V]
 //Сдeлать связь между введенными значениями в инпуте #search-box и функцией fetchCountries через функцию onInputValue [V]
 
@@ -48,14 +49,16 @@ const onInputValue = (e) => {
         cleanCardOfCountry(countryInfo)
 }
     fetchValue(textValue).then(r => {
-        if(r.length > 10) {
+        if (r.length > 10) {
+            cleanCardOfCountry(countryList);
+            cleanCardOfCountry(countryInfo)
             Notify.info('Too many matches found. Please enter a more specific name');
         return;
         }
         renderMarkupCardOfCountry(r)
     }).catch(err => {
         cleanCardOfCountry(countryInfo);
-        cleanCardOfCountry(countryList)
+        cleanCardOfCountry(countryList);
       Notify.failure(`Oops, there is no country with that name`)
     });
 
@@ -64,14 +67,14 @@ const onInputValue = (e) => {
 
 const renderMarkupCardOfCountry = (e) => {
     if (e.length === 1) {
-    cleanCardOfCountry(countryList);
-    countryInfo.innerHTML = renderInfoCountry(e);
-    } 
-    else {
-    cleanCardOfCountry(countryInfo);
-    countryList.innerHTML = renderListCountry(e);
-  }
+        cleanCardOfCountry(countryList);
+        countryInfo.innerHTML = renderInfoCountry(e);
     }
+    else {
+        cleanCardOfCountry(countryInfo);
+        countryList.innerHTML = renderListCountry(e);
+    }
+}
     
 
 const renderListCountry = (e) => {
@@ -82,16 +85,30 @@ const renderListCountry = (e) => {
 }
 
 const renderInfoCountry = (e) => {
-    return e.map(({ name, population, flags, languages }) => {
-    `<h1>
-    <img src="${flags.png}" alt="${name.official}" width="40" height="40">
-    ${name.official}
-    </h1>
+    return e.map(({ name, population, capital, flags, languages }) => 
+        `
+    <img src="${flags.png}" alt="${name.official}" width="70" height="50">
+    <h1>${name.official}</h1>
     <p>Capital: ${capital}</p>
     <p>Population: ${population}</p>
-    <p>Languages: ${Object.values(languages)}</p>`
-    })
+    <p>Languages: ${Object.values(languages)}</p>
+    <style>
+        .country-info{
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+            border-radius: 30px;
+            border:1px solid #212121;
+            background-color: #e7e7e7;
+            box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.25);
+        }
+  </style>
+`
+    )
     
 }
 
-inputTextValue.addEventListener('input', onInputValue)
+inputTextValue.addEventListener('input', debounce(onInputValue, DEBOUNCE_DELAY))
