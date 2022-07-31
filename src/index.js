@@ -4,10 +4,10 @@ import fetchCountries from './js/fetchCounties';
 //Создать функцию по поиску стран fetchCountries [V]
 //Сдeлать связь между введенными значениями в инпуте #search-box и функцией fetchCountries через функцию onInputValue [V]
 
-// Создать проверку на количество найденых стран, чтобы было не больше 10 стран, если больше АЛЕРТ 
-// Создать функцию обработки успешного нахождения
-//Создать функцию обработки НЕ успешного нахождения
-//Рендер разметки к countryList и countryInfo через шаблонніе строки
+// Создать проверку на количество найденых стран, чтобы было не больше 10 стран, если больше АЛЕРТ [V]
+// Создать функцию обработки успешного нахождения[V]
+//Создать функцию обработки НЕ успешного нахождения[V]
+//Рендер разметки к countryList и countryInfo через шаблонніе строки[V]
 
 
 
@@ -83,10 +83,13 @@ const renderListCountry = (e) => {
 
 const renderInfoCountry = (e) => {
     return e.map(({ name, population, flags, languages }) => {
-        `<h1><img src="${flags.png}" alt="${name.official}" width="40" height="40">${name.official}</h1>
-      <p>Capital: ${capital}</p>
-      <p>Population: ${population}</p>
-      <p>Languages: ${Object.values(languages)}</p>`
+    `<h1>
+    <img src="${flags.png}" alt="${name.official}" width="40" height="40">
+    ${name.official}
+    </h1>
+    <p>Capital: ${capital}</p>
+    <p>Population: ${population}</p>
+    <p>Languages: ${Object.values(languages)}</p>`
     })
     
 }
