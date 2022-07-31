@@ -44,19 +44,26 @@ const DEBOUNCE_DELAY = 300;
 const onInputValue = (e) => {
 
     const textValue = e.target.value.trim();
+    if (textValue.length < 2 && textValue.length !== 0) {
+        cleanCardOfCountry(countryList);
+        cleanCardOfCountry(countryInfo);
+        Notify.warning('You need write more, to find correct country');
+        return
+    }
+
     if (!textValue) {
         cleanCardOfCountry(countryList);
         cleanCardOfCountry(countryInfo)
         return
 }
-    fetchValue(textValue).then(r => {
-        if (r.length > 10) {
+    fetchValue(textValue).then(result => {
+        if (result.length > 10) {
             cleanCardOfCountry(countryList);
             cleanCardOfCountry(countryInfo)
             Notify.info('Too many matches found. Please enter a more specific name');
         return;
         }
-        renderMarkupCardOfCountry(r)
+        renderMarkupCardOfCountry(result)
     }).catch(err => {
         cleanCardOfCountry(countryInfo);
         cleanCardOfCountry(countryList);
