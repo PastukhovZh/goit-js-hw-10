@@ -47,6 +47,7 @@ const onInputValue = (e) => {
     if (!textValue) {
         cleanCardOfCountry(countryList);
         cleanCardOfCountry(countryInfo)
+        return
 }
     fetchValue(textValue).then(r => {
         if (r.length > 10) {
